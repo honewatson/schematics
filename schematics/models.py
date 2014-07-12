@@ -148,8 +148,9 @@ class ModelMeta(type):
 
         ### Add reference to klass to each field instance
         for field in fields.values():
-            if not getattr(field, "owner_model", ""):
-                field.owner_model = klass
+            field.owner_model = klass
+            if not getattr(field, "declared_model", ""):
+                field.declared_model = klass
 
         return klass
 
