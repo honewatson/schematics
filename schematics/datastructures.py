@@ -2,6 +2,7 @@ from itertools import izip, imap
 
 _missing = object()
 
+from copy import deepcopy
 
 class OrderedDict(dict):
     """Simple ordered dict implementation.

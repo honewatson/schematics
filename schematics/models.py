@@ -11,7 +11,7 @@ from .transforms import allow_none, atoms, flatten, expand
 from .transforms import to_primitive, to_native, convert
 from .validate import validate
 from .datastructures import OrderedDict as OrderedDictWithSort
-
+from copy import deepcopy
 
 class FieldDescriptor(object):
     """
@@ -133,9 +133,11 @@ class ModelMeta(type):
 
         ### Convert list of types into fields for new klass
         fields.sort(key=lambda i: i[1]._position_hint)
+
         for key, field in fields.iteritems():
             attrs[key] = FieldDescriptor(key)
 
+        fields.update(deepcopy(fields))
         ### Ready meta data to be klass attributes
         attrs['_fields'] = fields
         attrs['_serializables'] = serializables
@@ -146,7 +148,8 @@ class ModelMeta(type):
 
         ### Add reference to klass to each field instance
         for field in fields.values():
-            field.owner_model = klass
+            if not getattr(field, "owner_model", ""):
+                field.owner_model = klass
 
         return klass
 
